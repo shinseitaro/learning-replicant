@@ -18,3 +18,5 @@ pom.xml.asc
 .calva/
 .vscode/
 .cljfmt.edn
+.shadow-cljs/
+resources/public/js/
