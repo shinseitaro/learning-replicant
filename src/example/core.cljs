@@ -1,6 +1,6 @@
 (ns example.core
   (:require [replicant.dom :as r]
-            [example.ui :as ui]
+            [example.counter :as counter]
             [example.layout :as layout]))
 
 (def views [{:id   :counter
@@ -19,19 +19,15 @@
       current-view
       views)
      (case current-view
-       :counter (ui/render-ui state)
+       :counter (counter/render-ui state)
        [:div.m-8
         [:h1.text-lg "気温の画面"]])]))
 
-(defn perform-actions [state event-data] ;; state に引数名を変更 
+(defn perform-actions [state event-data]
   (mapcat
-   (fn [[action & args]]
-     (case action
-       ::ui/inc-number
-       [[:effect/assoc-in [:number] (inc (:number state))]]
-       ::layout/set-current-view
-       (let [[id] args]
-         [[:effect/assoc-in [:current-view] id]])))
+   (fn [action]
+     (or (counter/perform-action state action)
+         (layout/perform-action state action)))
    event-data))
 
 (defn process-effect [store [effect & args]]

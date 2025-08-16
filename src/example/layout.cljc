@@ -1,5 +1,11 @@
 (ns example.layout)
 
+(defn perform-action [_ [action & args]]
+  (when (= action ::set-current-view)
+    (let [[id] args]
+      [[:effect/assoc-in [:current-view] id]])))
+
+
 (defn tab-bar [current-view views]
   [:div.tabs.tabs-box {:role "tablist"}
    (for [{:keys [id text] } views]
