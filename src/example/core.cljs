@@ -23,6 +23,21 @@
        [:div.m-8
         [:h1.text-lg "気温の画面"]])]))
 
+(defn perform-actions [state event-data] ;; state に引数名を変更 
+  (mapcat
+   (fn [[action & args]]
+     (case action
+       ::ui/inc-number
+       [[:effect/assoc-in [:number] (inc (:number state))]]
+       ::layout/set-current-view
+       (let [[id] args]
+         [[:effect/assoc-in [:current-view] id]])))
+   event-data))
+
+(defn process-effect [store [effect & args]]
+  (case effect
+    :effect/assoc-in (apply swap! store assoc-in args)));; args は可変長なので apply を使う
+
 (defn init [store]
   (add-watch
    store
@@ -32,12 +47,8 @@
 
   (r/set-dispatch!
    (fn [_ event-data]
-     (doseq [[action & args] event-data]
-       (case action
-         ::ui/inc-number (swap! store update :number inc)
-         ::layout/set-current-view
-         (let [[id] args]
-           (swap! store assoc :current-view id))))))
+     (->> (perform-actions @store event-data)
+          (run! #(process-effect store %)))))
 
   (swap! store assoc :hoge :moge))
 
