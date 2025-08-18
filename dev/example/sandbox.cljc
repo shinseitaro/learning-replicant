@@ -1,8 +1,6 @@
 (ns example.sandbox
   (:require [nexus.registry :as nxr]
-            [replicant.dom :as r]
-            [dataspex.core :as dataspex]))
-
+            [replicant.dom :as r]))
 
 (defn save [_ store path value]
   (swap! store assoc-in path value))
@@ -11,7 +9,7 @@
   [[:effects/save path (+ (:step state) (get-in state path))]])
 
 (defn render [state]
-  [:div
+  [:div.m-8
    [:p "Number: " (:number state)]
    [:div
     [:label "Step size: "]

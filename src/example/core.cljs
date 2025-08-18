@@ -8,6 +8,7 @@
             {:id   :temperature
              :text "気温"}])
 
+
 (defn get-current-view [state]
   (or (:current-view state)
       (-> views first :id)))
